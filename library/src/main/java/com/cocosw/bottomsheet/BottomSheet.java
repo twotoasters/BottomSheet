@@ -331,12 +331,22 @@ public class BottomSheet extends Dialog implements DialogInterface, View.OnClick
 
     public void showItem(int itemId) {
         getAdapter().showItem(itemId);
-
+        // If we're not showing we don't want to animate.
+        if (!isShowing()) getAdapter().notifyDataSetChanged();
         invalidateDialogLayout();
     }
 
     public void hideItem(int itemId) {
         getAdapter().hideItem(itemId);
+
+        if (list == null) return;
+
+        if (isShowing()) {
+            // If we're not showing we don't want to animate.
+            getAdapter().notifyDataSetChanged();
+            invalidateDialogLayout();
+            return;
+        }
 
         list.post(new Runnable() {
             @Override
